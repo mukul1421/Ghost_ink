@@ -16,7 +16,16 @@ main {
   padding: 0 20px;
 }
 
+#stats-bar {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  font-size: 18px;
+  color: #c9a55c;
+}
+
 #wordsWrapper {
+  position: relative;
   margin-bottom: 24px;
 }
 
@@ -36,12 +45,33 @@ main {
   color: #565b66;
 }
 
+.char.correct {
+  color: #4ecdc4;
+}
+
+.char.incorrect {
+  color: #d9534f;
+}
+
+#caret {
+  position: absolute;
+  width: 2px;
+  height: 28px;
+  background: #c9a55c;
+  top: 0;
+  left: 0;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
 #wordsInput {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
-
 
 button {
   font-family: inherit;
@@ -57,14 +87,6 @@ button {
 button:hover {
   color: #ece9e1;
   border-color: #565b66;
-}
-
-#stats-bar {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 32px;
-  font-size: 18px;
-  color: #c9a55c;
 }
 
 #results-panel {

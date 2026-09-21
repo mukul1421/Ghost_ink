@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css">
   <title>Ghost Ink</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -14,26 +14,21 @@
 
   <main>
 
-    
     <div id="stats-bar">
       <span id="stat-time">30</span>
       <span id="stat-wpm">0</span>
       <span id="stat-accuracy">100</span>
     </div>
 
-    
     <div id="wordsWrapper">
-      <div id="words">
-        
-      </div>
+      <div id="words"></div>
+      <div id="caret"></div>
     </div>
 
-    
     <input type="text" id="wordsInput" autocomplete="off">
 
     <button id="restart-btn">Restart</button>
 
-    
     <section id="results-panel" hidden>
       <p>WPM: <span id="result-wpm"></span></p>
       <p>Accuracy: <span id="result-accuracy"></span></p>
