@@ -37,7 +37,7 @@ function getCurrentWordEl() {
 function checkTypedWord() {
   const typed = wordsInput.value;
   const currentWordEl = getCurrentWordEl();
-  const letterEls = currentWordEl.querySelectorAll('.char');
+  const letterEls = currentWordEl.querySelectorAll('.char:not(.extra)');
 
   letterEls.forEach((letterEl, index) => {
     const typedChar = typed[index];
@@ -52,6 +52,18 @@ function checkTypedWord() {
       letterEl.classList.add('incorrect');
     }
   });
+
+  currentWordEl.querySelectorAll('.char.extra').forEach(el => el.remove());
+
+  if (typed.length > letterEls.length) {
+    const extraChars = typed.slice(letterEls.length);
+    [...extraChars].forEach(char => {
+      const extraSpan = document.createElement('span');
+      extraSpan.classList.add('char', 'extra', 'incorrect');
+      extraSpan.textContent = char;
+      currentWordEl.appendChild(extraSpan);
+    });
+  }
 
   moveCaret();
 }

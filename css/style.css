@@ -106,3 +106,7 @@ button:hover {
   color: #ece9e1;
   font-weight: bold;
 }
+
+.char.extra {
+  opacity: 0.7;
+}
