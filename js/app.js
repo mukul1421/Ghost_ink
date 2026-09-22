@@ -5,7 +5,13 @@ const caret = document.getElementById('caret');
 const restartBtn = document.getElementById('restart-btn');
 
 let currentWordIndex = 0;
-let typedWords = []; // stores what was typed for each word, by index
+let typedWords = []; 
+
+let testStarted = false;
+let timeLeft = 30;
+let timerInterval;
+let correctCharCount = 0;
+let totalKeystrokes = 0;
 
 function renderWords(wordCount) {
   wordsContainer.innerHTML = '';
@@ -36,6 +42,12 @@ function getCurrentWordEl() {
 
 function checkTypedWord() {
   const typed = wordsInput.value;
+
+  if (!testStarted) {
+    testStarted = true;
+    startTimer();
+  }
+
   const currentWordEl = getCurrentWordEl();
   const letterEls = currentWordEl.querySelectorAll('.char:not(.extra)');
 
@@ -93,24 +105,72 @@ function goToNextWord() {
   const typed = wordsInput.value;
   if (typed.length === 0) return;
 
-  typedWords[currentWordIndex] = typed; // remember what was typed here
-  getCurrentWordEl().classList.add('completed');
+  typedWords[currentWordIndex] = typed;
+
+  const currentWordEl = getCurrentWordEl();
+  const letterEls = currentWordEl.querySelectorAll('.char:not(.extra)');
+
+  letterEls.forEach((letterEl, index) => {
+    totalKeystrokes++;
+    if (typed[index] === letterEl.textContent) {
+      correctCharCount++;
+    }
+  });
+
+  totalKeystrokes++;
+  correctCharCount++;
+
+  currentWordEl.classList.add('completed');
   currentWordIndex++;
   wordsInput.value = '';
 
   moveCaret();
 }
 
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById('stat-time').textContent = timeLeft;
+
+    updateLiveStats();
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      finishTest();
+    }
+  }, 1000);
+}
+
+function updateLiveStats() {
+  const elapsedMinutes = (30 - timeLeft) / 60;
+  const wpm = elapsedMinutes > 0 ? Math.round((correctCharCount / 5) / elapsedMinutes) : 0;
+  const accuracy = totalKeystrokes > 0 ? Math.round((correctCharCount / totalKeystrokes) * 100) : 100;
+
+  document.getElementById('stat-wpm').textContent = wpm;
+  document.getElementById('stat-accuracy').textContent = accuracy;
+}
+
+function finishTest() {
+  wordsInput.disabled = true;
+  document.getElementById('results-panel').hidden = false;
+
+  const finalWpm = document.getElementById('stat-wpm').textContent;
+  const finalAccuracy = document.getElementById('stat-accuracy').textContent;
+
+  document.getElementById('result-wpm').textContent = finalWpm;
+  document.getElementById('result-accuracy').textContent = finalAccuracy;
+  document.getElementById('result-consistency').textContent = '—'; // placeholder for now
+}
+
 function goToPreviousWord() {
-  if (currentWordIndex === 0) return; // nothing before the first word
+  if (currentWordIndex === 0) return; 
 
   currentWordIndex--;
   getCurrentWordEl().classList.remove('completed');
 
-  // restore whatever was typed in that word before
   wordsInput.value = typedWords[currentWordIndex] || '';
 
-  checkTypedWord(); // re-color the letters based on restored text
+  checkTypedWord(); 
 }
 
 function focusInput() {
@@ -118,6 +178,19 @@ function focusInput() {
 }
 
 function startTest() {
+  clearInterval(timerInterval);
+  testStarted = false;
+  timeLeft = 30;
+  correctCharCount = 0;
+  totalKeystrokes = 0;
+
+  document.getElementById('stat-time').textContent = timeLeft;
+  document.getElementById('stat-wpm').textContent = 0;
+  document.getElementById('stat-accuracy').textContent = 100;
+
+  document.getElementById('results-panel').hidden = true;
+  wordsInput.disabled = false;
+
   renderWords(20);
   wordsInput.value = '';
   focusInput();
@@ -141,3 +214,4 @@ wordsInput.addEventListener('keydown', (e) => {
 restartBtn.addEventListener('click', startTest);
 
 document.addEventListener('DOMContentLoaded', startTest);
+
