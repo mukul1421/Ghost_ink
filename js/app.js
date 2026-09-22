@@ -13,6 +13,8 @@ let timerInterval;
 let correctCharCount = 0;
 let totalKeystrokes = 0;
 
+let wpmSamples = [];
+
 function renderWords(wordCount) {
   wordsContainer.innerHTML = '';
   currentWordIndex = 0;
@@ -146,8 +148,25 @@ function updateLiveStats() {
   const wpm = elapsedMinutes > 0 ? Math.round((correctCharCount / 5) / elapsedMinutes) : 0;
   const accuracy = totalKeystrokes > 0 ? Math.round((correctCharCount / totalKeystrokes) * 100) : 100;
 
+  wpmSamples.push(wpm);
+
   document.getElementById('stat-wpm').textContent = wpm;
   document.getElementById('stat-accuracy').textContent = accuracy;
+}
+
+function calculateConsistency() {
+  if (wpmSamples.length === 0) return 100;
+
+  const average = wpmSamples.reduce((sum, val) => sum + val, 0) / wpmSamples.length;
+
+  const squaredDiffs = wpmSamples.map(val => (val - average) ** 2);
+  const avgSquaredDiff = squaredDiffs.reduce((sum, val) => sum + val, 0) / squaredDiffs.length;
+  const standardDeviation = Math.sqrt(avgSquaredDiff);
+
+  const coefficientOfVariation = average > 0 ? standardDeviation / average : 0;
+  const consistency = Math.max(0, Math.round(100 - (coefficientOfVariation * 100)));
+
+  return consistency;
 }
 
 function finishTest() {
@@ -156,10 +175,11 @@ function finishTest() {
 
   const finalWpm = document.getElementById('stat-wpm').textContent;
   const finalAccuracy = document.getElementById('stat-accuracy').textContent;
+  const finalConsistency = calculateConsistency()
 
   document.getElementById('result-wpm').textContent = finalWpm;
   document.getElementById('result-accuracy').textContent = finalAccuracy;
-  document.getElementById('result-consistency').textContent = '—'; // placeholder for now
+  document.getElementById('result-consistency').textContent = finalConsistency; 
 }
 
 function goToPreviousWord() {
@@ -183,6 +203,7 @@ function startTest() {
   timeLeft = 30;
   correctCharCount = 0;
   totalKeystrokes = 0;
+  wpmSamples = [];
 
   document.getElementById('stat-time').textContent = timeLeft;
   document.getElementById('stat-wpm').textContent = 0;
