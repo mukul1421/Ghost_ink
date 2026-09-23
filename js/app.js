@@ -15,6 +15,9 @@ let totalKeystrokes = 0;
 
 let wpmSamples = [];
 
+let keystrokeLog = [];
+let lastKeystrokeTime = null;
+
 function renderWords(wordCount) {
   wordsContainer.innerHTML = '';
   currentWordIndex = 0;
@@ -49,6 +52,17 @@ function checkTypedWord() {
     testStarted = true;
     startTimer();
   }
+
+  const now = performance.now();
+  const delay = lastKeystrokeTime === null ? 0 : now - lastKeystrokeTime;
+
+  keystrokeLog.push({
+    char: typed[typed.length - 1],
+    timestamp: now,
+    delay: delay
+  });
+
+  lastKeystrokeTime = now;
 
   const currentWordEl = getCurrentWordEl();
   const letterEls = currentWordEl.querySelectorAll('.char:not(.extra)');
@@ -204,6 +218,9 @@ function startTest() {
   correctCharCount = 0;
   totalKeystrokes = 0;
   wpmSamples = [];
+  keystrokeLog = [];
+  lastKeystrokeTime = null;
+  
 
   document.getElementById('stat-time').textContent = timeLeft;
   document.getElementById('stat-wpm').textContent = 0;
