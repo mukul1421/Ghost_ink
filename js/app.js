@@ -253,3 +253,26 @@ restartBtn.addEventListener('click', startTest);
 
 document.addEventListener('DOMContentLoaded', startTest);
 
+
+function calculateMetrics() {
+  const delays = keystrokeLog
+    .map(entry => entry.delay)
+    .filter(delay => delay > 0); 
+
+  const avgDelay = delays.reduce((sum, val) => sum + val, 0) / delays.length;
+
+  const squaredDiffs = delays.map(val => (val - avgDelay) ** 2);
+  const avgSquaredDiff = squaredDiffs.reduce((sum, val) => sum + val, 0) / squaredDiffs.length;
+  const standardDeviation = Math.sqrt(avgSquaredDiff);
+
+  const delayVariance = avgDelay > 0 ? standardDeviation / avgDelay : 0;
+
+  const errorRate = totalKeystrokes > 0 ? 1 - (correctCharCount / totalKeystrokes) : 0;
+
+  return {
+    avgDelay: Math.round(avgDelay * 100) / 100,
+    delayVariance: Math.round(delayVariance * 1000) / 1000,
+    errorRate: Math.round(errorRate * 1000) / 1000
+  };
+}
+
