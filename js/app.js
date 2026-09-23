@@ -183,7 +183,7 @@ function calculateConsistency() {
   return consistency;
 }
 
-function finishTest() {
+async function finishTest() {
   wordsInput.disabled = true;
   document.getElementById('results-panel').hidden = false;
 
@@ -193,7 +193,11 @@ function finishTest() {
 
   document.getElementById('result-wpm').textContent = finalWpm;
   document.getElementById('result-accuracy').textContent = finalAccuracy;
-  document.getElementById('result-consistency').textContent = finalConsistency; 
+  document.getElementById('result-consistency').textContent = finalConsistency;
+  
+  const metrics = calculateMetrics();
+  const signatureKey = await generateSignatureKey(metrics);
+  document.getElementById('signature-key').textContent = signatureKey;
 }
 
 function goToPreviousWord() {
@@ -276,3 +280,20 @@ function calculateMetrics() {
   };
 }
 
+
+
+async function generateSignatureKey(metrics) {
+  const metricsString = JSON.stringify(metrics);
+
+  const encoder = new TextEncoder();
+  const dataBytes = encoder.encode(metricsString);
+
+  const hashBuffer = await crypto.subtle.digest('SHA-256', dataBytes);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hexString = hashArray
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+
+  return hexString;
+}
