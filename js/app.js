@@ -198,6 +198,14 @@ async function finishTest() {
   const metrics = calculateMetrics();
   const signatureKey = await generateSignatureKey(metrics);
   document.getElementById('signature-key').textContent = signatureKey;
+
+  await saveSession({
+    date: new Date().toISOString(),
+    wpm: Number(finalWpm),
+    accuracy: Number(finalAccuracy),
+    consistency: Number(finalConsistency),
+    key: signatureKey
+  });
 }
 
 function goToPreviousWord() {
