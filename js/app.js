@@ -9,6 +9,7 @@ let typedWords = [];
 
 let testStarted = false;
 let timeLeft = 30;
+let totalTime = 30;
 let timerInterval;
 let correctCharCount = 0;
 let totalKeystrokes = 0;
@@ -17,6 +18,8 @@ let wpmSamples = [];
 
 let keystrokeLog = [];
 let lastKeystrokeTime = null;
+
+let currentLine = 0;
 
 function renderWords(wordCount) {
   wordsContainer.innerHTML = '';
@@ -115,6 +118,26 @@ function moveCaret() {
 
   caret.style.left = `${left - wrapperRect.left}px`;
   caret.style.top = `${rect.top - wrapperRect.top}px`;
+
+   updateScroll();
+}
+
+
+function updateScroll() {
+  const currentWordEl = getCurrentWordEl();
+  if (!currentWordEl) return;
+
+  const wrapperRect = wordsWrapper.getBoundingClientRect();
+  const wordRect = currentWordEl.getBoundingClientRect();
+
+  const lineHeight = 28 * 1.6; // matches font-size * line-height from CSS
+  const relativeTop = wordRect.top - wrapperRect.top;
+  const lineIndex = Math.round(relativeTop / lineHeight) + currentLine;
+
+  if (lineIndex > currentLine + 1) {
+    currentLine = lineIndex - 1;
+    wordsContainer.style.transform = `translateY(-${currentLine * lineHeight}px)`;
+  }
 }
 
 function goToNextWord() {
@@ -158,7 +181,7 @@ function startTimer() {
 }
 
 function updateLiveStats() {
-  const elapsedMinutes = (30 - timeLeft) / 60;
+  const elapsedMinutes = (totalTime - timeLeft) / 60;
   const wpm = elapsedMinutes > 0 ? Math.round((correctCharCount / 5) / elapsedMinutes) : 0;
   const accuracy = totalKeystrokes > 0 ? Math.round((correctCharCount / totalKeystrokes) * 100) : 100;
 
@@ -201,6 +224,7 @@ async function finishTest() {
 
   await saveSession({
     date: new Date().toISOString(),
+    time: totalTime,
     wpm: Number(finalWpm),
     accuracy: Number(finalAccuracy),
     consistency: Number(finalConsistency),
@@ -226,7 +250,7 @@ function focusInput() {
 function startTest() {
   clearInterval(timerInterval);
   testStarted = false;
-  timeLeft = 30;
+  timeLeft = totalTime;
   correctCharCount = 0;
   totalKeystrokes = 0;
   wpmSamples = [];
@@ -241,7 +265,9 @@ function startTest() {
   document.getElementById('results-panel').hidden = true;
   wordsInput.disabled = false;
 
-  renderWords(20);
+  renderWords(100);
+  currentLine = 0;
+  wordsContainer.style.transform = 'translateY(0px)';
   wordsInput.value = '';
   focusInput();
   moveCaret();
@@ -261,10 +287,18 @@ wordsInput.addEventListener('keydown', (e) => {
   }
 });
 
-restartBtn.addEventListener('click', startTest);
+document.querySelectorAll('.config-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.config-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    totalTime = Number(btn.dataset.time);
+    startTest();
+  });
+});
 
-document.addEventListener('DOMContentLoaded', startTest);
-
+const initialBtn = document.querySelector('.config-btn.active');
+totalTime = Number(initialBtn.dataset.time);
+startTest();
 
 function calculateMetrics() {
   const delays = keystrokeLog
