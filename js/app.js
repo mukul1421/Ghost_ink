@@ -103,6 +103,8 @@ function moveCaret() {
   const currentWordEl = getCurrentWordEl();
   if (!currentWordEl) return;
 
+  updateScroll();
+
   const typed = wordsInput.value;
   const letterEls = currentWordEl.querySelectorAll('.char');
 
@@ -118,8 +120,6 @@ function moveCaret() {
 
   caret.style.left = `${left - wrapperRect.left}px`;
   caret.style.top = `${rect.top - wrapperRect.top}px`;
-
-   updateScroll();
 }
 
 
@@ -130,7 +130,7 @@ function updateScroll() {
   const wrapperRect = wordsWrapper.getBoundingClientRect();
   const wordRect = currentWordEl.getBoundingClientRect();
 
-  const lineHeight = 28 * 1.6; // matches font-size * line-height from CSS
+  const lineHeight = 28 * 1.6;
   const relativeTop = wordRect.top - wrapperRect.top;
   const lineIndex = Math.round(relativeTop / lineHeight) + currentLine;
 
