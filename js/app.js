@@ -289,6 +289,7 @@ wordsInput.addEventListener('keydown', (e) => {
 
 document.querySelectorAll('.config-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    if (!btn.dataset.time) return;
     document.querySelectorAll('.config-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     totalTime = Number(btn.dataset.time);
@@ -299,6 +300,8 @@ document.querySelectorAll('.config-btn').forEach(btn => {
 const initialBtn = document.querySelector('.config-btn.active');
 totalTime = Number(initialBtn.dataset.time);
 startTest();
+
+restartBtn.addEventListener('click', startTest);
 
 function calculateMetrics() {
   const delays = keystrokeLog

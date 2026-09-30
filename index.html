@@ -9,23 +9,40 @@
 <body>
 
   <header>
-    <h1>Ghost Ink</h1>
+    <div class="nav-shell">
+      <a class="brand" href="./">ghost<span>ink</span></a>
+      <nav aria-label="Primary navigation">
+        <a class="nav-link active" href="#test">test</a>
+        <a class="nav-link" href="#results-panel">results</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" type="button" aria-label="Toggle theme">sun</button>
+        <button class="icon-btn" type="button" aria-label="Open settings">settings</button>
+      </div>
+    </div>
   </header>
 
-  <main>
+  <main id="test">
 
     <div id="config-bar">
-      <button class="config-btn" data-time="15">15</button>
-      <button class="config-btn active" data-time="30">30</button>
-      <button class="config-btn" data-time="60">60</button>
-      <button class="config-btn" data-time="120">120</button>
+      <div class="config-group" aria-label="Test duration">
+        <span class="config-label">time</span>
+        <button class="config-btn" data-time="15">15</button>
+        <button class="config-btn active" data-time="30">30</button>
+        <button class="config-btn" data-time="60">60</button>
+        <button class="config-btn" data-time="120">120</button>
+      </div>
+      <div class="config-group" aria-label="Word count">
+        <span class="config-label">words</span>
+        <button class="config-btn" type="button">100</button>
+      </div>
     </div>
     
     
     <div id="stats-bar">
-      <span id="stat-time">30</span>
-      <span id="stat-wpm">0</span>
-      <span id="stat-accuracy">100</span>
+      <div class="stat"><span class="stat-value" id="stat-time">30</span><span class="stat-label">time</span></div>
+      <div class="stat"><span class="stat-value" id="stat-wpm">0</span><span class="stat-label">wpm</span></div>
+      <div class="stat"><span class="stat-value" id="stat-accuracy">100</span><span class="stat-label">accuracy</span></div>
     </div>
 
     <div id="wordsWrapper">
@@ -35,9 +52,16 @@
 
     <input type="text" id="wordsInput" autocomplete="off">
 
-    <button id="restart-btn">Restart</button>
+    <div class="test-controls">
+      <button id="restart-btn" type="button" title="Restart test">restart</button>
+      <span class="hint">press any key to start</span>
+    </div>
 
     <section id="results-panel" hidden>
+      <div class="results-heading">
+        <span class="eyebrow">test complete</span>
+        <h2>your result</h2>
+      </div>
       <p>WPM: <span id="result-wpm"></span></p>
       <p>Accuracy: <span id="result-accuracy"></span></p>
       <p>Consistency: <span id="result-consistency"></span></p>
