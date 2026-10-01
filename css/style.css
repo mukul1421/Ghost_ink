@@ -292,3 +292,40 @@ main {
     height: 28px;
   }
 }
+
+
+.signature-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+#signature-canvas {
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.signature-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.signature-label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#signature-key {
+  color: var(--text);
+  font-size: 13px;
+  word-break: break-all;
+}

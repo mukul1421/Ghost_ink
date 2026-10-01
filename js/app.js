@@ -222,13 +222,16 @@ async function finishTest() {
   const signatureKey = await generateSignatureKey(metrics);
   document.getElementById('signature-key').textContent = signatureKey;
 
-  await saveSession({
+  drawIdenticon(document.getElementById('signature-canvas'), signatureKey);
+
+   await saveSession({
     date: new Date().toISOString(),
     time: totalTime,
     wpm: Number(finalWpm),
     accuracy: Number(finalAccuracy),
     consistency: Number(finalConsistency),
-    key: signatureKey
+    key: signatureKey,
+    metrics: metrics
   });
 }
 
@@ -341,4 +344,34 @@ async function generateSignatureKey(metrics) {
     .join('');
 
   return hexString;
+}
+
+
+function drawIdenticon(canvas, hexKey) {
+  const ctx = canvas.getContext('2d');
+  const gridSize = 5;
+  const cellSize = canvas.width / gridSize;
+
+  const bytes = hexKey.match(/.{2}/g).map(pair => parseInt(pair, 16));
+
+  // background first, instead of leaving it transparent/black
+  ctx.fillStyle = '#1b2833';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const hue = Math.round((bytes[0] / 255) * 360);
+  ctx.fillStyle = `hsl(${hue}, 65%, 60%)`;
+
+  let byteIndex = 1;
+
+  for (let row = 0; row < gridSize; row++) {
+    for (let col = 0; col < 3; col++) {
+      const filled = bytes[byteIndex] % 2 === 0;
+      byteIndex++;
+
+      if (filled) {
+        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        ctx.fillRect((gridSize - 1 - col) * cellSize, row * cellSize, cellSize, cellSize);
+      }
+    }
+  }
 }
