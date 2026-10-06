@@ -18,12 +18,17 @@
     </div>
   </header>
 
-  <main>
-    <h1 class="page-title">your signatures</h1>
-    <p class="page-subtitle">every typing session leaves a unique mark.</p>
+  <main class="gallery-page">
+    <section class="gallery-intro" aria-labelledby="gallery-title">
+      <span class="eyebrow">personal archive</span>
+      <h1 class="page-title" id="gallery-title">your signatures</h1>
+      <p class="page-subtitle">Every typing session leaves a unique mark.</p>
+    </section>
 
-    <div id="gallery-grid"></div>
-    <div id="gallery-detail" hidden></div>
+    <section class="gallery-content" aria-label="Signature gallery">
+      <div id="gallery-grid"></div>
+      <div id="gallery-detail" hidden></div>
+    </section>
   </main>
 
   <script src="js/db.js"></script>
