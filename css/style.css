@@ -330,30 +330,6 @@ main {
   word-break: break-all;
 }
 
-#verifyWrapper {
-  position: relative;
-  font-size: 26px;
-  line-height: 1.7;
-  margin-bottom: 24px;
-}
-
-#verifyCaret {
-  position: absolute;
-  width: 2px;
-  height: 34px;
-  background: var(--accent);
-  top: 0;
-  left: 0;
-  animation: blink 1s step-end infinite;
-}
-
-#verifyInput {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-
 #gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
@@ -392,4 +368,16 @@ main {
 .detail-stats span {
   color: var(--text);
   font-weight: 700;
+}
+
+.gallery-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.gallery-link:hover {
+  text-decoration: underline;
 }
