@@ -26,22 +26,56 @@ function drawIdenticon(canvas, hexKey) {
   }
 }
 
+function renderSummary(sessions) {
+  const summary = document.getElementById('gallery-summary');
+  if (!summary) return;
+
+  if (sessions.length === 0) {
+    summary.innerHTML = '';
+    return;
+  }
+
+  const bestWpm = Math.max(...sessions.map(s => s.wpm));
+  const avgAccuracy = Math.round(
+    sessions.reduce((sum, s) => sum + s.accuracy, 0) / sessions.length
+  );
+
+  summary.innerHTML = `
+    <div class="summary-stat">
+      <span class="summary-value">${sessions.length}</span>
+      <span class="summary-label">sessions</span>
+    </div>
+    <div class="summary-stat">
+      <span class="summary-value">${bestWpm}</span>
+      <span class="summary-label">best wpm</span>
+    </div>
+    <div class="summary-stat">
+      <span class="summary-value">${avgAccuracy}%</span>
+      <span class="summary-label">avg accuracy</span>
+    </div>
+  `;
+}
+
 async function renderGallery() {
-  const sessions = await getAllSessions();
+  const sessions = (await getAllSessions()).reverse();
   const grid = document.getElementById('gallery-grid');
+  const detail = document.getElementById('gallery-detail');
+  const clearBtn = document.getElementById('clear-all-btn');
+
+  renderSummary(sessions);
+  grid.innerHTML = '';
+  detail.hidden = true;
+  clearBtn.hidden = sessions.length === 0;
 
   if (sessions.length === 0) {
     grid.innerHTML = '<p class="empty-state">No sessions yet. Go finish a test.</p>';
     return;
   }
 
-  const sorted = sessions.slice().reverse();
-
-  grid.innerHTML = '';
-
-  sorted.forEach(session => {
+  sessions.forEach(session => {
     const tile = document.createElement('button');
     tile.classList.add('gallery-tile');
+    tile.title = session.label || new Date(session.date).toLocaleString();
 
     const canvas = document.createElement('canvas');
     canvas.width = 72;
@@ -52,30 +86,69 @@ async function renderGallery() {
 
     drawIdenticon(canvas, session.key);
 
-    tile.addEventListener('click', () => showDetail(session));
+    tile.addEventListener('click', () => showDetail(session, tile));
   });
 }
 
-function showDetail(session) {
+function showDetail(session, tileEl) {
+  document.querySelectorAll('.gallery-tile').forEach(t => t.classList.remove('selected'));
+  tileEl.classList.add('selected');
+
   const detail = document.getElementById('gallery-detail');
 
   detail.innerHTML = `
     <div class="signature-card">
       <canvas id="detail-canvas" width="72" height="72"></canvas>
       <div class="signature-info">
-        <span class="signature-label">${new Date(session.date).toLocaleString()}</span>
-        <code>${session.key}</code>
+        <span class="signature-label" id="detail-date"></span>
+        <code id="detail-key"></code>
       </div>
     </div>
+
     <div class="detail-stats">
       <p>WPM: <span>${session.wpm}</span></p>
       <p>Accuracy: <span>${session.accuracy}%</span></p>
       <p>Consistency: <span>${session.consistency}%</span></p>
     </div>
+
+    <div class="detail-edit">
+      <label for="detail-label">label</label>
+      <div class="detail-edit-row">
+        <input type="text" id="detail-label" maxlength="40" placeholder="name this session">
+        <button type="button" id="save-label-btn">save</button>
+        <button type="button" id="delete-btn" class="danger">delete</button>
+      </div>
+      <p class="detail-status" id="detail-status"></p>
+    </div>
   `;
+
+  document.getElementById('detail-date').textContent = new Date(session.date).toLocaleString();
+  document.getElementById('detail-key').textContent = session.key;
+  document.getElementById('detail-label').value = session.label || '';
 
   detail.hidden = false;
   drawIdenticon(document.getElementById('detail-canvas'), session.key);
+
+  document.getElementById('save-label-btn').addEventListener('click', async () => {
+    const label = document.getElementById('detail-label').value.trim();
+    await updateSession(session.id, { label });
+
+    session.label = label;
+    tileEl.title = label || new Date(session.date).toLocaleString();
+    document.getElementById('detail-status').textContent = 'saved';
+  });
+
+  document.getElementById('delete-btn').addEventListener('click', async () => {
+    if (!confirm('Delete this session? This cannot be undone.')) return;
+    await deleteSession(session.id);
+    await renderGallery();
+  });
 }
+
+document.getElementById('clear-all-btn').addEventListener('click', async () => {
+  if (!confirm('Delete ALL saved sessions? This cannot be undone.')) return;
+  await clearAllSessions();
+  await renderGallery();
+});
 
 document.addEventListener('DOMContentLoaded', renderGallery);

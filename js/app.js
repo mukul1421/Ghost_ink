@@ -68,6 +68,7 @@ function checkTypedWord() {
   lastKeystrokeTime = now;
 
   const currentWordEl = getCurrentWordEl();
+  if (!currentWordEl) return;
   const letterEls = currentWordEl.querySelectorAll('.char:not(.extra)');
 
   letterEls.forEach((letterEl, index) => {
@@ -162,6 +163,13 @@ function goToNextWord() {
   currentWordEl.classList.add('completed');
   currentWordIndex++;
   wordsInput.value = '';
+
+  if (!getCurrentWordEl()) {
+    clearInterval(timerInterval);
+    updateLiveStats();
+    finishTest();
+    return;
+  }
 
   moveCaret();
 }
@@ -268,7 +276,10 @@ function startTest() {
   document.getElementById('results-panel').hidden = true;
   wordsInput.disabled = false;
 
-  renderWords(100);
+  const wordCount = totalTime * 4;
+  renderWords(wordCount);
+  document.getElementById('word-count').textContent = wordCount;
+  
   currentLine = 0;
   wordsContainer.style.transform = 'translateY(0px)';
   wordsInput.value = '';

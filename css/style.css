@@ -56,13 +56,14 @@ nav {
   gap: 24px;
 }
 
-.nav-link, .icon-btn {
+.nav-link {
   color: var(--muted);
   text-decoration: none;
   transition: color 120ms ease;
 }
 
-.nav-link:hover, .nav-link.active, .icon-btn:hover {
+.nav-link:hover,
+.nav-link.active {
   color: var(--text);
 }
 
@@ -74,30 +75,60 @@ main {
 #config-bar {
   display: flex;
   align-items: center;
-  gap: 28px;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: fit-content;
   margin-bottom: 46px;
-  color: var(--muted);
+  padding: 6px;
+  background: var(--panel);
+  border-radius: 8px;
   font-size: 13px;
 }
 
 .config-group {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 4px;
+  padding: 0 8px;
+}
+
+.config-group + .config-group {
+  padding-left: 16px;
+  border-left: 2px solid var(--bg);
 }
 
 .config-label {
-  color: var(--text);
+  margin-right: 8px;
+  color: var(--muted);
 }
 
 .config-btn {
-  padding: 0;
-  color: var(--muted);
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
   background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
   cursor: pointer;
+  transition: color 125ms ease;
 }
 
-.config-btn:hover, .config-btn.active {
+.config-btn:hover {
+  color: var(--text);
+}
+
+.config-btn.active {
+  color: var(--accent);
+}
+
+.config-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.config-value {
+  padding: 6px 10px;
   color: var(--accent);
 }
 
@@ -244,50 +275,36 @@ main {
   text-overflow: ellipsis;
 }
 
-@media (max-width: 640px) {
-  header {
-    padding: 22px 20px 0;
-  }
+#results-panel .signature-card {
+  margin-top: 24px;
+}
 
-  .nav-shell {
-    gap: 24px;
-  }
+.gallery-link {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 9px 16px;
+  background: var(--panel);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1;
+  text-decoration: none;
+  transition: background 125ms ease, color 125ms ease;
+}
 
-  .nav-actions {
-    gap: 10px;
-  }
-
-  main {
-    width: calc(100% - 40px);
-    margin-top: 76px;
-  }
-
-  #config-bar {
-    flex-wrap: wrap;
-    gap: 18px;
-    margin-bottom: 36px;
-  }
-
-  #words {
-    font-size: 21px;
-  }
-
-  #wordsWrapper {
-    height: 128px;
-  }
-
-  #caret {
-    height: 28px;
-  }
+.gallery-link:hover,
+.gallery-link:focus-visible {
+  background: var(--text);
+  color: var(--bg);
+  outline: none;
 }
 
 .signature-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 20px;
-  padding: 16px;
-  background: var(--panel);
+  gap: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--panel), #292b2e);
   border: 1px solid var(--border);
   border-radius: 8px;
 }
@@ -317,6 +334,45 @@ main {
   color: var(--text);
   font-size: 13px;
   word-break: break-all;
+}
+
+.gallery-page {
+  margin-top: 84px;
+}
+
+.gallery-intro {
+  max-width: 640px;
+  margin-bottom: 48px;
+}
+
+.gallery-intro .eyebrow {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.gallery-content {
+  max-width: 760px;
+}
+
+.page-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 400;
+  letter-spacing: -2px;
+  line-height: 1.05;
+}
+
+.page-subtitle {
+  max-width: 420px;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.empty-state {
+  padding: 32px 0;
+  color: var(--muted);
+  line-height: 1.7;
 }
 
 #gallery-grid {
@@ -351,6 +407,11 @@ main {
 
 .gallery-tile:focus-visible {
   box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+
+.gallery-tile.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .gallery-tile canvas {
@@ -392,53 +453,119 @@ main {
   letter-spacing: normal;
 }
 
-.gallery-intro {
-  max-width: 640px;
-  margin-bottom: 48px;
+.detail-edit {
+  max-width: 520px;
+  margin-top: 28px;
 }
 
-.gallery-page {
-  margin-top: 84px;
-}
-
-.gallery-intro .eyebrow {
+.detail-edit label {
   display: block;
-  margin-bottom: 14px;
-}
-
-.page-title {
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 400;
-  letter-spacing: -2px;
-  line-height: 1.05;
-}
-
-.page-subtitle {
-  max-width: 420px;
-  margin-top: 16px;
+  margin-bottom: 8px;
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.gallery-content {
-  max-width: 760px;
+.detail-edit-row {
+  display: flex;
+  gap: 10px;
 }
 
-.signature-card {
-  margin-top: 0;
-  padding: 20px;
-  gap: 20px;
-  background: linear-gradient(135deg, var(--panel), #292b2e);
+.detail-status {
+  min-height: 18px;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 12px;
 }
 
-.empty-state {
-  padding: 32px 0;
+.link-btn {
+  margin-bottom: 36px;
+}
+
+.detail-edit-row button,
+.link-btn {
+  padding: 9px 16px;
+  background: var(--panel);
+  border: none;
+  border-radius: 6px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 125ms ease, color 125ms ease;
+}
+
+.detail-edit-row button:hover,
+.detail-edit-row button:focus-visible,
+.link-btn:hover,
+.link-btn:focus-visible {
+  background: var(--text);
+  color: var(--bg);
+  outline: none;
+}
+
+.detail-edit-row button.danger:hover,
+.detail-edit-row button.danger:focus-visible,
+.link-btn.danger:hover,
+.link-btn.danger:focus-visible {
+  background: var(--error);
+  color: var(--bg);
+}
+
+.detail-edit-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  background: var(--panel);
+  border: none;
+  border-radius: 6px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  transition: box-shadow 125ms ease;
+}
+
+.detail-edit-row input::placeholder {
   color: var(--muted);
-  line-height: 1.7;
+}
+
+.detail-edit-row input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 @media (max-width: 640px) {
+  header {
+    padding: 22px 20px 0;
+  }
+
+  .nav-shell {
+    gap: 24px;
+  }
+
+  main {
+    width: calc(100% - 40px);
+    margin-top: 76px;
+  }
+
+  #config-bar {
+    margin-bottom: 36px;
+  }
+
+  #words {
+    font-size: 21px;
+  }
+
+  #wordsWrapper {
+    height: 128px;
+  }
+
+  #caret {
+    height: 28px;
+  }
+
   .gallery-page {
     margin-top: 72px;
   }
@@ -466,5 +593,13 @@ main {
     gap: 18px;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  .detail-edit-row {
+    flex-wrap: wrap;
+  }
+
+  .detail-edit-row input {
+    flex-basis: 100%;
   }
 }
