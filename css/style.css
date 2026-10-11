@@ -1,12 +1,12 @@
 :root {
-  --bg: #101820;
-  --panel: #1b2833;
-  --text: #edf6f4;
-  --muted: #7e929b;
-  --accent: #62e6c7;
-  --correct: #12df94;
-  --error: #ff7b8a;
-  --border: #344653;
+  --bg: #323437;
+  --panel: #2c2e31;
+  --text: #d1d0c5;
+  --muted: #646669;
+  --accent: #e2b714;
+  --correct: #e2b714;
+  --error: #ca4754;
+  --border: #3c3f41;
 }
 
 * {
@@ -64,18 +64,6 @@ nav {
 
 .nav-link:hover, .nav-link.active, .icon-btn:hover {
   color: var(--text);
-}
-
-.nav-actions {
-  display: flex;
-  gap: 18px;
-  margin-left: auto;
-}
-
-.icon-btn {
-  background: transparent;
-  cursor: pointer;
-  font-size: 13px;
 }
 
 main {
@@ -342,7 +330,7 @@ main {
 .gallery-tile {
   min-width: 0;
   padding: 0;
-  border: 1px solid rgba(52, 70, 83, 0.9);
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--panel);
   cursor: pointer;
@@ -354,7 +342,7 @@ main {
 
 .gallery-tile:hover,
 .gallery-tile:focus-visible {
-  background: #22313d;
+  background: #3c3f41;
   border-color: var(--accent);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
   outline: none;
@@ -441,7 +429,7 @@ main {
   margin-top: 0;
   padding: 20px;
   gap: 20px;
-  background: linear-gradient(135deg, var(--panel), #17232d);
+  background: linear-gradient(135deg, var(--panel), #292b2e);
 }
 
 .empty-state {

@@ -5,7 +5,7 @@ function drawIdenticon(canvas, hexKey) {
 
   const bytes = hexKey.match(/.{2}/g).map(pair => parseInt(pair, 16));
 
-  ctx.fillStyle = '#1b2833';
+  ctx.fillStyle = '#2c2e31';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   const hue = Math.round((bytes[0] / 255) * 360);
