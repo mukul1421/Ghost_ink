@@ -4,6 +4,8 @@ A Monkeytype-style typing test that turns your typing rhythm into a unique
 digital signature. Built with vanilla HTML, CSS, and JavaScript. No
 frameworks, no backend, no build step.
 
+**Live demo:** [ghost-ink.vercel.app](https://ghost-ink.vercel.app/)
+
 ## Features
 
 - Typing test with live WPM, accuracy, and consistency
